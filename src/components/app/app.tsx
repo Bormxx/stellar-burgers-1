@@ -1,16 +1,35 @@
-import { ConstructorPage, Feed, NotFound404 } from '@pages';
+import {
+  ConstructorPage,
+  Feed,
+  ForgotPassword,
+  Login,
+  NotFound404,
+  Profile,
+  ProfileOrders,
+  Register,
+  ResetPassword
+} from '@pages';
 import '../../index.css';
 import styles from './app.module.css';
-
 import { AppHeader, IngredientDetails, Modal, OrderInfo } from '@components';
-
-import React from 'react';
 import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
+import { useAppDispatch } from '../../services/store';
+import { useEffect } from 'react';
+import { checkAuthorization } from '../../services/reducers/authorization';
+import { fetchIngredients } from '../../services/reducers/ingredients';
+import { IsAuthorized, NotAuthorized } from '../protected/protected';
 
-export default function app() {
+const App = () => {
   const location = useLocation();
   const bgLocation = location.state?.background;
-  const navigate = useNavigate();
+  const nav = useNavigate();
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(checkAuthorization());
+    dispatch(fetchIngredients());
+  }, []);
+
   return (
     <div className={styles.app}>
       <AppHeader />
@@ -18,6 +37,30 @@ export default function app() {
         <Route path='/' element={<ConstructorPage />} />
         <Route path='/feed' element={<Feed />} />
         <Route path='*' element={<NotFound404 />} />
+        <Route
+          path='/profile'
+          element={<IsAuthorized component={<Profile />} />}
+        />
+        <Route
+          path='/login'
+          element={<NotAuthorized component={<Login />} />}
+        />
+        <Route
+          path='/register'
+          element={<NotAuthorized component={<Register />} />}
+        />
+        <Route
+          path='/forgot-password'
+          element={<NotAuthorized component={<ForgotPassword />} />}
+        />
+        <Route
+          path='/reset-password'
+          element={<NotAuthorized component={<ResetPassword />} />}
+        />
+        <Route
+          path='/profile/orders'
+          element={<IsAuthorized component={<ProfileOrders />} />}
+        />
         <Route path='/feed/:number' element={<OrderInfo />} />
         <Route path='/ingredients/:id' element={<IngredientDetails />} />
       </Routes>
@@ -27,9 +70,9 @@ export default function app() {
             path='/feed/:number'
             element={
               <Modal
-                title='Заказ'
+                title={'Заказ'}
                 children={<OrderInfo />}
-                onClose={() => navigate('/feed')}
+                onClose={() => nav('/feed')}
               />
             }
           />
@@ -37,9 +80,9 @@ export default function app() {
             path='/ingredients/:id'
             element={
               <Modal
-                title='Детали ингредиента'
+                title='Details'
                 children={<IngredientDetails />}
-                onClose={() => navigate('/')}
+                onClose={() => nav('/')}
               />
             }
           />
@@ -48,8 +91,8 @@ export default function app() {
             element={
               <Modal
                 title='Заказ'
-                children={<OnlyAuth component={<OrderInfo />} />}
-                onClose={() => navigate('/profile/orders')}
+                children={<IsAuthorized component={<OrderInfo />} />}
+                onClose={() => nav('/profile/orders')}
               />
             }
           />
@@ -57,4 +100,6 @@ export default function app() {
       )}
     </div>
   );
-}
+};
+
+export default App;

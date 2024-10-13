@@ -24,7 +24,7 @@ const initialState: IUState = {
 };
 
 export const userRegistration = createAsyncThunk(
-  'userRegistration',
+  'reducers/userRegistration',
   async (data: TRegisterData) => {
     const result = await registerUserApi(data);
     setCookie('accessToken', result.accessToken);
@@ -34,17 +34,17 @@ export const userRegistration = createAsyncThunk(
 );
 
 export const userLogin = createAsyncThunk(
-  'userLogin',
+  'reducers/userLogin',
   async (data: TLoginData) => {
     const result = await loginUserApi(data);
-    setCookie('accessTocken', result.accessToken);
+    setCookie('accessToken', result.accessToken);
     localStorage.setItem('refreshToken', result.refreshToken);
     return result;
   }
 );
 
 export const userUpdate = createAsyncThunk(
-  'userUpdate',
+  'reducers/userUpdate',
   async (data: Partial<TRegisterData>) => {
     await updateUserApi(data);
     return getUserApi();
@@ -54,18 +54,18 @@ export const userUpdate = createAsyncThunk(
 export const userLogout = createAsyncThunk('userLogout', async () => {
   await logoutApi();
   localStorage.removeItem('refreshToken');
-  deleteCookie('accessTocken');
+  deleteCookie('accessToken');
 });
 
 export const checkAuthorization = createAsyncThunk(
-  'checkAuthorization',
+  'reducers/checkAuthorization',
   async (_, { dispatch }) => {
-    if (getCookie('accessTocken')) {
+    if (getCookie('accessToken')) {
       getUserApi()
         .then((result) => dispatch(setUser(result.user)))
         .catch(() => {
           localStorage.removeItem('refreshToken');
-          deleteCookie('accessTocken');
+          deleteCookie('accessToken');
         })
         .finally(() => dispatch(setAuthorization(true)));
     } else {

@@ -10,6 +10,7 @@ import {
   orderModalSelector,
   ordersSelector
 } from '../../services/reducers/orders';
+import { setNum } from '../ui/modal/modal';
 
 export const OrderInfo: FC = () => {
   /** TODO: взять переменные orderData и ingredients из стора */
@@ -20,6 +21,8 @@ export const OrderInfo: FC = () => {
   const ingredients: TIngredient[] = useAppSelector(ingredientsSelector);
   const dataModal = useAppSelector(orderModalSelector);
   const data = useAppSelector(ordersSelector);
+  setNum(number);
+
   useEffect(() => {
     if (number) {
       const order: TOrder | undefined = data.find(
@@ -35,7 +38,6 @@ export const OrderInfo: FC = () => {
   useEffect(() => {
     if (dataModal && dataModal.number === number) setOrderData(dataModal);
   }, [dataModal, number]);
-
   /* Готовим данные для отображения */
   const orderInfo = useMemo(() => {
     if (!orderData || !ingredients.length) return null;

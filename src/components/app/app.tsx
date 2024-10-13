@@ -11,7 +11,6 @@ import {
 } from '@pages';
 import '../../index.css';
 import styles from './app.module.css';
-
 import { AppHeader, IngredientDetails, Modal, OrderInfo } from '@components';
 import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '../../services/store';
@@ -62,6 +61,8 @@ const App = () => {
           path='/profile/orders'
           element={<IsAuthorized component={<ProfileOrders />} />}
         />
+        <Route path='/feed/:number' element={<OrderInfo />} />
+        <Route path='/ingredients/:id' element={<IngredientDetails />} />
       </Routes>
       {bgLocation && (
         <Routes>
@@ -69,7 +70,7 @@ const App = () => {
             path='/feed/:number'
             element={
               <Modal
-                title='Order'
+                title={'Заказ: '}
                 children={<OrderInfo />}
                 onClose={() => nav('/feed')}
               />

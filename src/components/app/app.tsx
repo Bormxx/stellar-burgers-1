@@ -61,6 +61,10 @@ const App = () => {
           path='/profile/orders'
           element={<IsAuthorized component={<ProfileOrders />} />}
         />
+        <Route
+          path='/profile/orders/:number'
+          element={<IsAuthorized component={<OrderInfo />} />}
+        />
         <Route path='/feed/:number' element={<OrderInfo />} />
         <Route path='/ingredients/:id' element={<IngredientDetails />} />
       </Routes>
